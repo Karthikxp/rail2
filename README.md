@@ -1,5 +1,4 @@
-# Next.js Boilerplate
-
+## Railway Tracker
 A modern, production-ready Next.js boilerplate with TypeScript, Tailwind CSS, and beautiful UI components.
 
 ## 🚀 Features
