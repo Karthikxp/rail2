@@ -88,13 +88,13 @@ export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
         <div className="relative w-[121px] h-[39px]">
           <div 
             onClick={handleDropdownToggle}
-            className={`absolute top-[0px] left-[0px] rounded-[27px] bg-gray-100 w-[121px] h-[39px] transition-all duration-1000 cursor-pointer ${
+            className={`absolute top-[0px] left-[0px] rounded-[27px] bg-gray-300 w-[121px] h-[39px] transition-all duration-1000 cursor-pointer ${
               isAnimating 
                 ? 'ring-2 ring-red ring-opacity-100 shadow-lg shadow-red/50' 
                 : 'ring-0 ring-opacity-0'
             }`} 
           />
-          <div className="absolute top-[4px] left-[3px] rounded-[50%] bg-darkslategray w-8 h-8 pointer-events-none" />
+          <div className="absolute top-[4px] left-[3px] rounded-[50%] bg-[#3A3A3A] w-8 h-8 pointer-events-none" />
           
           <div className="absolute top-[12px] left-[44px] font-extralight text-white text-[12px] pointer-events-none">
             {getDisplayText()}
@@ -126,7 +126,7 @@ export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
             id="filter-mode" 
             checked={isAllMode}
             onCheckedChange={handleToggleChange}
-            className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-600 h-6 w-11 scale-75"
+            className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-300 h-6 w-11 scale-75"
           />
           <Label 
             htmlFor="filter-mode" 

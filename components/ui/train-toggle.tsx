@@ -21,7 +21,7 @@ export function TrainToggle({ onToggleChange }: TrainToggleProps) {
         id="train-type" 
         checked={isEnabled}
         onCheckedChange={setIsEnabled}
-        className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-600 h-6 w-11"
+        className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-300 h-6 w-11"
       />
       <Label 
         htmlFor="train-type" 

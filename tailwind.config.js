@@ -12,11 +12,14 @@ module.exports = {
   			black: '#000',
   			white: '#fff',
   			gray: {
-  				'100': '#131313',
-  				'200': 'rgba(255, 255, 255, 0.32)'
+  				'100': '#787878',
+  				'200': '#242424',
+  				'300': '#131313',
+  				'400': 'rgba(255, 255, 255, 0.04)'
   			},
   			red: '#fc0b20',
   			darkslategray: '#3a3a3a',
+  			dimgray: '#5f5f5f',
   			gainsboro: 'rgba(255, 255, 255, 0.14)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -59,11 +62,11 @@ module.exports = {
   				'5': 'hsl(var(--chart-5))'
   			}
   		},
-  				fontFamily: {
-			inter: 'Inter',
+  		fontFamily: {
+  			inter: 'Inter',
 			minimalust: 'Minimalust',
 			'cf-christmas-stitch': ['CF Christmas Stitch', 'serif']
-		},
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

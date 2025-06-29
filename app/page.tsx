@@ -414,7 +414,7 @@ const Desktop2: NextPage = () => {
         className="absolute top-[302px] left-[163px] w-[345px] h-14 text-[16.07px] text-gray-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={`absolute top-[0px] left-[0px] rounded-[21px] bg-gray-100 w-[345px] h-14 transition-all duration-1000 ${
+        <div className={`absolute top-[0px] left-[0px] rounded-[21px] bg-gray-300 w-[345px] h-14 transition-all duration-1000 ${
           isSourceAnimating 
             ? 'ring-2 ring-red ring-opacity-100 shadow-lg shadow-red/50' 
             : 'ring-0 ring-opacity-0'
@@ -436,7 +436,8 @@ const Desktop2: NextPage = () => {
           onFocus={handleInputFocus}
           onKeyDown={handleKeyDown}
           placeholder="Source: Chennai, Tamil Nadu"
-          className="absolute top-[8px] left-[6px] w-[280px] h-[40px] bg-transparent border-none outline-none text-gray-200 font-light text-[16.07px] placeholder-gray-200"
+          className="absolute top-[8px] left-[6px] w-[280px] h-[40px] bg-transparent border-none outline-none text-white font-light text-[16.07px] placeholder-white"
+          style={{ opacity: 0.32 }}
         />
       </div>
 
@@ -538,7 +539,7 @@ const Desktop2: NextPage = () => {
         className="absolute top-[470px] left-[163px] w-[345px] h-14 text-[16.07px] text-gray-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={`absolute top-[0px] left-[0px] rounded-[21px] bg-gray-100 w-[345px] h-14 transition-all duration-1000 ${
+        <div className={`absolute top-[0px] left-[0px] rounded-[21px] bg-gray-300 w-[345px] h-14 transition-all duration-1000 ${
           isDestAnimating 
             ? 'ring-2 ring-red ring-opacity-100 shadow-lg shadow-red/50' 
             : 'ring-0 ring-opacity-0'
@@ -560,7 +561,8 @@ const Desktop2: NextPage = () => {
           onFocus={handleDestInputFocus}
           onKeyDown={handleDestKeyDown}
           placeholder="Destination"
-          className="absolute top-[8px] left-[6px] w-[280px] h-[40px] bg-transparent border-none outline-none text-gray-200 font-light text-[16.07px] placeholder-gray-200"
+          className="absolute top-[8px] left-[6px] w-[280px] h-[40px] bg-transparent border-none outline-none text-white font-light text-[16.07px] placeholder-white"
+          style={{ opacity: 0.32 }}
         />
       </div>
 
@@ -748,17 +750,17 @@ const Desktop2: NextPage = () => {
       </div>
       
       {/* Top Right Icons */}
-      <div className="absolute top-[55px] left-[1317px] rounded-[50%] bg-gray-100 w-16 h-16" />
+      <div className="absolute top-[55px] left-[1317px] rounded-[50%] bg-gray-300 w-16 h-16" />
       <Image className="absolute top-[75px] left-[1337px] w-6 h-6 overflow-hidden" width={24} height={24} sizes="100vw" alt="" src="/profile bar.svg" />
       
-      <div className="absolute top-[55px] left-[1216px] rounded-[50%] bg-gray-100 w-16 h-16" />
+      <div className="absolute top-[55px] left-[1216px] rounded-[50%] bg-gray-300 w-16 h-16" />
       <Image className="absolute top-[75px] left-[1236px] w-6 h-6 overflow-hidden" width={24} height={24} sizes="100vw" alt="" src="/help bar.svg" />
       
       <CreditsDrawer>
-        <div className="absolute top-[55px] left-[1094px] rounded-[50%] bg-gray-100 w-16 h-16 cursor-pointer" />
+        <div className="absolute top-[55px] left-[1094px] rounded-[50%] bg-gray-300 w-16 h-16 cursor-pointer" />
       </CreditsDrawer>
       
-      <div className="absolute top-[55px] left-[973px] rounded-[50%] bg-gray-100 w-16 h-16" />
+      <div className="absolute top-[55px] left-[973px] rounded-[50%] bg-gray-300 w-16 h-16" />
       <CreditsDrawer>
         <div className="absolute top-[79px] left-[1117px] font-extralight cursor-pointer">US</div>
       </CreditsDrawer>

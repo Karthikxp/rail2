@@ -39,7 +39,7 @@ export function CreditsDrawer({ children }: { children: React.ReactNode }) {
       <DrawerContent className="bg-black border-gray-800">
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerDescription className="text-center text-gray-300">Designed and Developed by</DrawerDescription>
+            <DrawerDescription className="text-center text-white/32">Designed and Developed by</DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-6">
             <div className="flex items-center justify-center">
