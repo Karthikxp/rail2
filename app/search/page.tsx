@@ -36,6 +36,8 @@ const SearchPage: NextPage = () => {
   const [trainResults, setTrainResults] = useState<TrainResult[]>([]);
   const [allTrains, setAllTrains] = useState<TrainResult[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<'price' | 'time' | 'distance'>('price');
 
   // Generate realistic train results based on search data
   const generateTrainResults = (data: SearchData): TrainResult[] => {
@@ -109,6 +111,46 @@ const SearchPage: NextPage = () => {
     setTrainResults(allTrains);
   };
 
+  // Helper function to parse price string to number
+  const parsePriceToNumber = (price: string): number => {
+    return parseFloat(price.replace('₹', '').replace(',', ''));
+  };
+
+  // Helper function to parse time string to minutes
+  const parseTimeToMinutes = (time: string): number => {
+    const [hours, minutes] = time.split('h ').map(part => parseInt(part));
+    return hours * 60 + (minutes || 0);
+  };
+
+  // Helper function to parse distance string to number
+  const parseDistanceToNumber = (distance: string): number => {
+    return parseInt(distance.split(' ')[0]);
+  };
+
+  // Sort trains based on selected criteria
+  const sortTrains = (trains: TrainResult[], criterion: 'price' | 'time' | 'distance') => {
+    const sortedTrains = [...trains];
+    switch (criterion) {
+      case 'price':
+        sortedTrains.sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
+        break;
+      case 'time':
+        sortedTrains.sort((a, b) => parseTimeToMinutes(a.duration) - parseTimeToMinutes(b.duration));
+        break;
+      case 'distance':
+        sortedTrains.sort((a, b) => parseDistanceToNumber(a.distance) - parseDistanceToNumber(b.distance));
+        break;
+    }
+    return sortedTrains;
+  };
+
+  // Handle sort selection
+  const handleSortSelect = (criterion: 'price' | 'time' | 'distance') => {
+    setSortBy(criterion);
+    setTrainResults(sortTrains(trainResults, criterion));
+    setIsSortDropdownOpen(false);
+  };
+
   useEffect(() => {
     // Retrieve search data from localStorage
     try {
@@ -117,8 +159,10 @@ const SearchPage: NextPage = () => {
         const data = JSON.parse(savedData);
         setSearchData(data);
         const trains = generateTrainResults(data);
-        setAllTrains(trains);
-        setTrainResults(trains);
+        // Sort trains initially by price
+        const sortedTrains = sortTrains(trains, 'price');
+        setAllTrains(sortedTrains);
+        setTrainResults(sortedTrains);
       }
     } catch (error) {
       console.error('Failed to retrieve search data:', error);
@@ -225,11 +269,53 @@ const SearchPage: NextPage = () => {
         </svg>
       </div>
       
-      <div className="absolute top-[173px] left-[1153.06px] rounded-[13.47px] bg-black/40 backdrop-blur-sm w-[104.4px] h-[39.1px] flex flex-row items-center justify-center py-[14.1px] px-[16.2px] box-border gap-[14.8px]">
-        <div className="relative font-medium text-white/60 text-[8.76px]">Sort by</div>
-        <svg className="w-[5.7px] h-[3px] text-white/60" fill="none" stroke="currentColor" viewBox="0 0 6 10">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
-        </svg>
+      {/* Sort Dropdown Button */}
+      <div className="absolute top-[173px] left-[1153.06px] z-50">
+        <button
+          id="sortDropdownButton"
+          onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+          className="rounded-[13.47px] bg-black/40 backdrop-blur-sm w-[90px] h-[35px] flex flex-row items-center justify-center py-[10px] px-[12px] box-border gap-[10px] text-white"
+        >
+          <div className="relative font-medium text-white/60 text-[8px]">Sort by</div>
+          <svg className="w-[5px] h-[3px] text-white/60" fill="none" stroke="currentColor" viewBox="0 0 6 10">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+          </svg>
+        </button>
+
+        {/* Dropdown Menu */}
+        {isSortDropdownOpen && (
+          <div
+            id="sortDropdown"
+            className="z-10 absolute top-[40px] right-0 bg-black divide-y divide-gray-100 rounded-lg shadow-sm w-36"
+          >
+            <ul className="py-1 text-xs text-white" aria-labelledby="sortDropdownButton">
+              <li>
+                <button
+                  onClick={() => handleSortSelect('price')}
+                  className={`block w-full px-3 py-1.5 text-left hover:bg-red-600 hover:text-white transition-colors ${sortBy === 'price' ? 'bg-red-600' : ''}`}
+                >
+                  Price
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleSortSelect('time')}
+                  className={`block w-full px-3 py-1.5 text-left hover:bg-red-600 hover:text-white transition-colors ${sortBy === 'time' ? 'bg-red-600' : ''}`}
+                >
+                  Time
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleSortSelect('distance')}
+                  className={`block w-full px-3 py-1.5 text-left hover:bg-red-600 hover:text-white transition-colors ${sortBy === 'distance' ? 'bg-red-600' : ''}`}
+                >
+                  Distance
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
       
       <div className="absolute top-[173px] left-[1291.83px] w-[39.1px] h-[39.1px] bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center">

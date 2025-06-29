@@ -765,7 +765,7 @@ const Desktop2: NextPage = () => {
         <div className="absolute top-[79px] left-[1117px] font-extralight cursor-pointer">US</div>
       </CreditsDrawer>
       <Image className="absolute top-[67px] left-[985px] w-10 h-10 overflow-hidden" width={40} height={40} sizes="100vw" alt="" src="/menu bar.svg" />
-
+      
       {/* WordRotate Component */}
       <div className="absolute top-[372px] left-[974px] text-[75.78px] font-cf-christmas-stitch">
         <WordRotate words={["RELIABLE", "TRUSTED", "LIVE"]} />
