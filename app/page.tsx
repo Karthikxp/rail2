@@ -394,8 +394,8 @@ const Desktop2: NextPage = () => {
       <div className="absolute top-[0px] left-[0px] [background:linear-gradient(180deg,_rgba(0,_0,_0,_0),_#000_95.59%)] w-[1439px] h-[969px]" />
 
       {/* Logo */}
-      <div className="absolute top-[16px] left-[45px]">
-        <Image className="w-full relative max-w-full overflow-hidden h-[60px]" width={89} height={60} sizes="100vw" alt="" src="/logosv.png" />
+      <div className="absolute top-[7px] left-[36px]">
+        <Image className="relative" width={89} height={60} sizes="100vw" alt="" src="/logosv.png" />
       </div>
 
       <div className="absolute top-[159px] left-[163px] text-[20.55px] font-extralight inline-block w-[140px] h-6">

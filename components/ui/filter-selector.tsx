@@ -15,10 +15,13 @@ const trainClasses = [
 
 interface FilterSelectorProps {
   onFilterChange?: (isAllMode: boolean, selectedClasses: string[]) => void;
+  showToggle?: boolean;
 }
 
-export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
-  const [isAllMode, setIsAllMode] = useState(true)
+export function FilterSelector({ onFilterChange, showToggle = true }: FilterSelectorProps) {
+  const [isAllModeState, setIsAllModeState] = useState(true);
+  const isAllMode = showToggle ? isAllModeState : false;
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedClasses, setSelectedClasses] = useState<string[]>([])
   const [isAnimating, setIsAnimating] = useState(false)
@@ -44,10 +47,12 @@ export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
   }, [])
 
   const handleToggleChange = (checked: boolean) => {
-    setIsAllMode(checked)
-    if (checked) {
-      setIsDropdownOpen(false)
-      setSelectedClasses([])
+    if (showToggle) {
+      setIsAllModeState(checked)
+      if (checked) {
+        setIsDropdownOpen(false)
+        setSelectedClasses([])
+      }
     }
   }
 
@@ -121,20 +126,22 @@ export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
         </div>
 
         {/* Toggle Switch */}
-        <div className="flex items-center space-x-2">
-          <Switch 
-            id="filter-mode" 
-            checked={isAllMode}
-            onCheckedChange={handleToggleChange}
-            className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-300 h-6 w-11 scale-75"
-          />
-          <Label 
-            htmlFor="filter-mode" 
-            className="w-[60px] relative text-xs font-extralight font-inter text-white text-left inline-block cursor-pointer"
-          >
-            {isAllMode ? 'All' : 'Custom'}
-          </Label>
-        </div>
+        {showToggle && (
+          <div className="flex items-center space-x-2">
+            <Switch 
+              id="filter-mode" 
+              checked={isAllModeState}
+              onCheckedChange={handleToggleChange}
+              className="data-[state=checked]:bg-red data-[state=unchecked]:bg-gray-300 h-6 w-11 scale-75"
+            />
+            <Label 
+              htmlFor="filter-mode" 
+              className="w-[60px] relative text-xs font-extralight font-inter text-white text-left inline-block cursor-pointer"
+            >
+              {isAllModeState ? 'All' : 'Custom'}
+            </Label>
+          </div>
+        )}
       </div>
 
       {/* Dropdown Checkbox Menu */}
@@ -154,7 +161,7 @@ export function FilterSelector({ onFilterChange }: FilterSelectorProps) {
                   />
                   <label 
                     htmlFor={`checkbox-${trainClass.id}`}
-                    className="ms-2 text-sm font-medium text-gray-200 cursor-pointer"
+                    className="ms-2 text-sm font-medium text-white/30 cursor-pointer"
                   >
                     {trainClass.label} - {trainClass.name}
                   </label>

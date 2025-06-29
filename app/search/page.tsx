@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { TextAnimate } from "@/components/magicui/text-animate";
+import { DatePicker } from '@/components/ui/date-picker';
+import { FilterSelector } from '@/components/ui/filter-selector';
 
 interface SearchData {
   sourceCity: string;
@@ -15,6 +17,9 @@ interface SearchData {
   vandeBharat: string;
   chosenClass: string;
   timestamp: string;
+  price: string;
+  intermediateStops: string[];
+  classes: string[];
 }
 
 interface TrainResult {
@@ -29,6 +34,7 @@ interface TrainResult {
   distance: string;
   price: string;
   intermediateStops: string[];
+  classes: string[];
 }
 
 const SearchPage: NextPage = () => {
@@ -38,6 +44,9 @@ const SearchPage: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'price' | 'time' | 'distance'>('price');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isAllClassMode, setIsAllClassMode] = useState(true);
+  const [selectedClasses, setSelectedClasses] = useState<string[]>([]);
 
   // Generate realistic train results based on search data
   const generateTrainResults = (data: SearchData): TrainResult[] => {
@@ -51,7 +60,8 @@ const SearchPage: NextPage = () => {
         duration: "10h 00m",
         distance: "737 km",
         price: "₹921.25",
-        intermediateStops: ["Karur Junction", "Trichy Junction"]
+        intermediateStops: ["Karur Junction", "Trichy Junction"],
+        classes: ['2ac', '3ac', 'sl'],
       },
       {
         trainName: "SHATABDI EXPRESS",
@@ -62,7 +72,8 @@ const SearchPage: NextPage = () => {
         duration: "8h 15m",
         distance: "563 km",
         price: "₹1,245.00",
-        intermediateStops: ["Salem Junction", "Erode Junction"]
+        intermediateStops: ["Salem Junction", "Erode Junction"],
+        classes: ['cc', 'fc'],
       },
       {
         trainName: "MAIL EXPRESS",
@@ -73,7 +84,8 @@ const SearchPage: NextPage = () => {
         duration: "14h 35m",
         distance: "689 km", 
         price: "₹756.50",
-        intermediateStops: ["Coimbatore Junction", "Palakkad Junction"]
+        intermediateStops: ["Coimbatore Junction", "Palakkad Junction"],
+        classes: ['sl', 'gn', '3ac'],
       }
     ];
 
@@ -100,9 +112,7 @@ const SearchPage: NextPage = () => {
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    filterTrains(query);
+    setSearchQuery(e.target.value);
   };
 
   // Clear search
@@ -147,8 +157,34 @@ const SearchPage: NextPage = () => {
   // Handle sort selection
   const handleSortSelect = (criterion: 'price' | 'time' | 'distance') => {
     setSortBy(criterion);
-    setTrainResults(sortTrains(trainResults, criterion));
     setIsSortDropdownOpen(false);
+  };
+
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (newDate && searchData) {
+      setSelectedDate(newDate);
+
+      // Format date to YYYY-MM-DD for consistency
+      const year = newDate.getFullYear();
+      const month = String(newDate.getMonth() + 1).padStart(2, '0');
+      const day = String(newDate.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      
+      const updatedSearchData = { ...searchData, date: formattedDate };
+      setSearchData(updatedSearchData);
+      
+      // Update localStorage so the change persists on refresh
+      localStorage.setItem('trainSearchData', JSON.stringify(updatedSearchData));
+      
+      // In a real application, you would re-fetch train data here.
+      // For this demo, we'll just log it.
+      console.log("Date changed, new search data:", updatedSearchData);
+    }
+  };
+
+  const handleFilterChange = (isAllMode: boolean, classes: string[]) => {
+    setIsAllClassMode(isAllMode);
+    setSelectedClasses(classes);
   };
 
   useEffect(() => {
@@ -158,6 +194,12 @@ const SearchPage: NextPage = () => {
       if (savedData) {
         const data = JSON.parse(savedData);
         setSearchData(data);
+        if (data.date) {
+          // Fix for timezone issues: create date from parts
+          const dateParts = data.date.split('-').map(Number);
+          setSelectedDate(new Date(dateParts[0], dateParts[1] - 1, dateParts[2]));
+        }
+
         const trains = generateTrainResults(data);
         // Sort trains initially by price
         const sortedTrains = sortTrains(trains, 'price');
@@ -168,6 +210,28 @@ const SearchPage: NextPage = () => {
       console.error('Failed to retrieve search data:', error);
     }
   }, []);
+
+  useEffect(() => {
+    let results = [...allTrains];
+
+    // Apply class filter
+    if (!isAllClassMode && selectedClasses.length > 0) {
+      results = results.filter(train =>
+        selectedClasses.some(cls => train.classes.includes(cls))
+      );
+    }
+
+    // Apply search query filter
+    if (searchQuery.trim()) {
+      results = results.filter(train =>
+        train.trainName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        train.trainNumber.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply sorting
+    setTrainResults(sortTrains(results, sortBy));
+  }, [searchQuery, isAllClassMode, selectedClasses, allTrains, sortBy]);
 
   return (
     <div className="w-full relative bg-black h-[969px] overflow-hidden text-left text-[8.76px] text-white font-inter">
@@ -186,8 +250,8 @@ const SearchPage: NextPage = () => {
       <div className="absolute top-[280px] left-[0px] w-[1439px] h-[557px] bg-black/80 rounded-2xl" />
       
       {/* Logo */}
-      <div className="absolute top-[16px] left-[45px]">
-        <Image className="w-full relative max-w-full overflow-hidden h-[60px]" width={89} height={60} sizes="100vw" alt="" src="/logosv.png" />
+      <div className="absolute top-[7px] left-[36px]">
+        <Image className="relative" width={89} height={60} sizes="100vw" alt="" src="/logosv.png" />
       </div>
       
       {/* Back Button */}
@@ -200,7 +264,7 @@ const SearchPage: NextPage = () => {
       </div>
       
       {/* Search Bar */}
-      <div className="absolute top-[40px] left-[1080px] rounded-[20.99px] bg-black/40 backdrop-blur-sm w-[200px] h-[39.1px] flex flex-row items-center justify-start py-[8.8px] px-[15px] box-border gap-[10px] text-[9.4px] border border-white/20">
+      <div className="absolute top-[40px] left-[1080px] rounded-[20.99px] bg-black/40 backdrop-blur-sm w-[200px] h-[39.1px] flex flex-row items-center justify-start py-[8.8px] px-[15px] box-border gap-[10px] text-[9.4px]">
         <svg className="w-[12.8px] h-[12.8px] text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -255,18 +319,23 @@ const SearchPage: NextPage = () => {
       )}
       
       {/* Filter Controls */}
-      <div className="absolute top-[173px] left-[858px] rounded-[13.47px] bg-black/40 backdrop-blur-sm w-[104.4px] h-[39.1px] flex flex-row items-center justify-center py-[12.8px] px-[15.5px] box-border gap-[12.8px]">
-        <div className="relative font-medium text-white/60 text-[8.76px]">Date</div>
-        <svg className="w-[13.5px] h-[13.5px] text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
+      <div className="absolute top-[173px] left-[858px]">
+        <DatePicker onDateChange={handleDateChange}>
+          {(date, formattedDate) => (
+            <button className="rounded-[13.47px] bg-black/40 backdrop-blur-sm w-[104.4px] h-[39.1px] flex flex-row items-center justify-center py-[12.8px] px-[15.5px] box-border gap-[12.8px] text-white/60 hover:bg-black/60 transition-colors">
+              <div className="relative font-medium text-[8.76px]">
+                {date ? formattedDate : (selectedDate ? selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date')}
+              </div>
+              <svg className="w-[13.5px] h-[13.5px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+          )}
+        </DatePicker>
       </div>
       
-      <div className="absolute top-[173px] left-[1008.22px] rounded-[13.47px] bg-black/40 backdrop-blur-sm w-[104.4px] h-[39.1px] flex flex-row items-center justify-center py-[14.1px] px-[15.5px] box-border gap-[14.8px]">
-        <div className="relative font-medium text-white/60 text-[8.76px]">Options</div>
-        <svg className="w-[5.7px] h-[3px] text-white/60" fill="none" stroke="currentColor" viewBox="0 0 6 10">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
-        </svg>
+      <div className="absolute top-[173px] left-[1008.22px]">
+        <FilterSelector onFilterChange={handleFilterChange} showToggle={false} />
       </div>
       
       {/* Sort Dropdown Button */}
