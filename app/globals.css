@@ -142,10 +142,6 @@ body {
   background: #a8a8a8;
 }
 
-
-
-/* CSS rules removed - using raw DOM manipulation instead */
-
 @layer base {
   * {
     @apply border-border;
@@ -153,4 +149,69 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Calendar specific styles - MAXIMUM SPECIFICITY for react-day-picker */
+
+/* Past dates - Grey and disabled */
+.rdp .rdp-button_reset.rdp-button.rdp-day:disabled,
+.rdp .rdp-day_disabled,
+.rdp button[disabled].rdp-day,
+.calendar-custom .rdp-day_disabled,
+.calendar-custom button[disabled] {
+  background-color: #374151 !important;
+  color: #9CA3AF !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  border-radius: 6px !important;
+}
+
+.rdp .rdp-button_reset.rdp-button.rdp-day:disabled:hover,
+.rdp .rdp-day_disabled:hover,
+.calendar-custom .rdp-day_disabled:hover {
+  background-color: #374151 !important;
+  color: #9CA3AF !important;
+}
+
+/* Today's date - Red by default */
+.rdp .rdp-day_today,
+.rdp .rdp-button_reset.rdp-button.rdp-day.rdp-day_today,
+.calendar-custom .rdp-day_today {
+  background-color: #fc0b20 !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 6px !important;
+}
+
+.rdp .rdp-day_today:hover {
+  background-color: #fc0b20 !important;
+  color: white !important;
+}
+
+/* Selected date - Red when chosen */
+.rdp .rdp-day_selected,
+.rdp .rdp-button_reset.rdp-button.rdp-day.rdp-day_selected,
+.rdp .rdp-day[aria-selected="true"],
+.calendar-custom .rdp-day_selected {
+  background-color: #fc0b20 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+
+.rdp .rdp-day_selected:hover {
+  background-color: #fc0b20 !important;
+  color: white !important;
+}
+
+/* Regular available dates */
+.rdp .rdp-button_reset.rdp-button.rdp-day:not(:disabled):not(.rdp-day_selected):not(.rdp-day_today) {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.rdp .rdp-button_reset.rdp-button.rdp-day:not(:disabled):not(.rdp-day_selected):not(.rdp-day_today):hover {
+  background-color: #374151 !important;
+  color: white !important;
 } 
